@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       setState(() {
         _displayMessage = 
-          "I am ${confidence.toStringAsFixed(2)}% accurate this is a $classification fungus${classification == 'edible' ? '!' : '.'}";
+          "I am ${confidence.toStringAsFixed(2)}% sure this is a $classification fungus${classification == 'edible' ? '!' : '.'}";
         if (confidence > 75) {
           _shroomBotPath = classification.contains('edible')
             ? 'assets/images/shroom_bot_hungry.webp'
