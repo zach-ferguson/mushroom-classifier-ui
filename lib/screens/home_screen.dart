@@ -1,20 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:mushroom_classifier_ui/widgets/photo_capture_widget.dart';
 import 'package:mushroom_classifier_ui/widgets/upload_button.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -22,64 +16,127 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _shroomBotPath = 'assets/images/shroom_bot.webp';
+  String? _displayMessage;
+
+  Future<void> _uploadImageToApi(Uint8List imageBytes) async {
+    var uri = Uri.parse('https://zferg1-mushroom-classifier-api.hf.space/predict/');
+    var request = http.MultipartRequest('POST', uri);
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        imageBytes,
+        filename: 'image.png',
+        contentType: MediaType('image', 'png')
+      ),
+    );
+
+    var res = await request.send();
+    var body = jsonDecode(await res.stream.bytesToString());
+
+    if (res.statusCode == 200) {
+      double confidence = body['confidence'] * 100;
+      String classification = body['prediction'].toString().contains('edible')
+        ? 'edible'
+        : 'poisonous';
+
+      setState(() {
+        _displayMessage = 
+          "I am ${confidence.toStringAsFixed(2)}% accurate this is a $classification fungus${classification == 'edible' ? '!' : '.'}";
+        if (confidence > 75) {
+          _shroomBotPath = classification.contains('edible')
+            ? 'assets/images/shroom_bot_hungry.webp'
+            : 'assets/images/shroom_bot_ill.webp';
+        } else {
+          _shroomBotPath = 'assets/images/shroom_bot_shrug.webp';
+        }
+      });
+    } else {
+      setState(() {
+        _displayMessage = 'Oh no! Something went wrong! ${res.statusCode}';
+        _shroomBotPath = 'assets/images/shroom_bot_error.webp';
+      });
+    }
+  }
+
+  void _reset() {
+    setState(() {
+      _displayMessage = null;
+      _shroomBotPath = 'assets/images/shroom_bot.webp';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final isMobile = !kIsWeb;
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/shroom_bot.webp',
+              _shroomBotPath,
               width: 150
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Text("Hello there!"),
+
+            if (_displayMessage == null)
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Text("Hello there!"),
+                  ),
+                  Text("Upload a file (or take a pic on mobile) of a fungus and I will try to predict whether it is poisonous or edible!"),
+                ],
+              ),
+
+            Text(
+              "Please verify for yourself whether the fungus is poisonous or not.",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text("Upload a file (or take a pic on mobile) of a fungus and I will try to predict whether it is poisonous or edible!"),
-            Text("Please verify for yourself whether the fungus is poisonous or not."),
             Text("This app is experimental and likely innacurate."),
-            if (isMobile) Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: PhotoCaptureWidget(),
-            ),
-            if (!isMobile) Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: UploadButton()
-            ),
+          
+            if (isMobile)
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: PhotoCaptureWidget(),
+              ),
+
+            if (!isMobile && _displayMessage == null) 
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: 
+                  UploadButton(onUpload: _uploadImageToApi)
+              ),
+
+            if (_displayMessage != null)
+              Column(children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Text('$_displayMessage')
+                ),
+                ElevatedButton(
+                  onPressed: _reset,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary
+                  ),
+                  child: Text(
+                    'Try again?',
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ),
+              ],
+            )
           ],
         ),
       ),
