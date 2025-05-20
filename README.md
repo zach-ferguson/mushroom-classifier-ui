@@ -1,16 +1,5 @@
 # mushroom_classifier_ui
 
-A new Flutter project.
+This is a flutter app made to interface with an image classifier model served by a FastAPI python backend [hosted on huggingface](https://huggingface.co/spaces/zferg1/mushroom-classifier-api).
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The model was created with the [fastai library](https://www.fast.ai/) and trained with a fungus image dataset from [marcosvolpato](https://www.kaggle.com/datasets/marcosvolpato/edible-and-poisonous-fungi), so big shout out to him for making this dataset available for open use.
