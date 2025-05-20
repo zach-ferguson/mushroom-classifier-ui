@@ -40,10 +40,11 @@ class _MyHomePageState extends State<MyHomePage> {
       String classification = body['prediction'].toString().contains('edible')
         ? 'edible'
         : 'poisonous';
+      bool isEdible = classification == 'edible';
 
       setState(() {
         _displayMessage = 
-          "I am ${confidence.toStringAsFixed(2)}% sure this is a $classification fungus${classification == 'edible' ? '!' : '.'}";
+          "I am ${confidence.toStringAsFixed(2)}% sure this is a${isEdible ? 'n' : ''} $classification fungus${isEdible ? '!' : '.'}";
         if (confidence > 75) {
           _shroomBotPath = classification.contains('edible')
             ? 'assets/images/shroom_bot_hungry.webp'
@@ -85,21 +86,30 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             if (_displayMessage == null)
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    child: Text("Hello there!"),
+              Padding(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                child:
+                  Column(
+                    children: [
+                      Text("Hello there!"),
+                      Text(
+                        "Upload a file of a fungus and I will try to predict whether it is poisonous or edible!",
+                        textAlign: TextAlign.center,
+                        ),
+                    ],
                   ),
-                  Text("Upload a file or take a picture (still in development) of a fungus and I will try to predict whether it is poisonous or edible!"),
-                ],
               ),
 
             Text(
-              "Please verify for yourself whether the fungus is poisonous or not.",
+              "Please verify for yourself whether the fungus is poisonous.",
               style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            Text("This app is experimental and likely innacurate."),
+            Text(
+              "This app is experimental and likely innacurate.",
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+              ),
           
             if (isMobile)
               Padding(
