@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Text("Hello there!"),
                       Text(
-                        "Upload a file of a fungus and I will try to predict whether it is poisonous or edible!",
+                        "Upload an image of a fungus and I will try to predict whether it is poisonous or edible!",
                         textAlign: TextAlign.center,
                         ),
                     ],
