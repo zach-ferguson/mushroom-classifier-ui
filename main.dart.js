@@ -57339,7 +57339,7 @@ s=A.m5("Mushroom Classifier",m,m,m)
 r=n.d
 q=t.k
 r=A.b([new A.rt(A.anq(m,m,new A.pR(r,m,m)),150,m)],q)
-if(n.e==null)r.push(new A.it(new A.bk(0,20,0,20),A.Oc(A.b([A.m5("Hello there!",m,m,m),A.m5("Upload a file of a fungus and I will try to predict whether it is poisonous or edible!",m,m,B.bn)],q),B.aT),m))
+if(n.e==null)r.push(new A.it(new A.bk(0,20,0,20),A.Oc(A.b([A.m5("Hello there!",m,m,m),A.m5("Upload an image of a fungus and I will try to predict whether it is poisonous or edible!",m,m,B.bn)],q),B.aT),m))
 r.push(A.m5("Please verify for yourself whether the fungus is poisonous.",m,A.k_(m,m,m,m,m,m,m,m,m,m,m,m,m,m,B.aS,m,m,!0,m,m,m,m,m,m,m,m),B.bn))
 r.push(A.m5("This app is experimental and likely innacurate.",m,A.k_(m,m,m,m,m,m,m,m,m,m,m,m,m,m,B.aS,m,m,!0,m,m,m,m,m,m,m,m),B.bn))
 p=n.e
