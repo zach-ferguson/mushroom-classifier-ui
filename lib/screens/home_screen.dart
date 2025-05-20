@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.only(top: 20, bottom: 20),
                     child: Text("Hello there!"),
                   ),
-                  Text("Upload a file (or take a pic on mobile) of a fungus and I will try to predict whether it is poisonous or edible!"),
+                  Text("Upload a file or take a picture (still in development) of a fungus and I will try to predict whether it is poisonous or edible!"),
                 ],
               ),
 
