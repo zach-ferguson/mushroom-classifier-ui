@@ -22,7 +22,7 @@ jobs:
         flutter-version: '3.29.3'
 
     - name: Build web
-      run: flutter build web
+      run: flutter build web --base-href="/mushroom-classifier-ui/"
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
