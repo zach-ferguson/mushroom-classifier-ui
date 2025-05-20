@@ -22,12 +22,10 @@ jobs:
         flutter-version: '3.29.3'
 
     - name: Build web
-      run: flutter build web --base-href="/mushroom/"
-
-    - name: Upload GitHub Pages artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: ./build/web
+      run: flutter build web
 
     - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v2
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/web
