@@ -2,7 +2,8 @@ name: Deploy Flutter Web App
 
 on:
   push:
-    branches: [release/**]
+    tags: 
+      - 'release/**'
 
 jobs:
   build:
