@@ -1,5 +1,7 @@
 # mushroom_classifier_ui
 
+[The App](https://zach-ferguson.github.io/mushroom-classifier-ui/)
+
 This is a flutter app that interfaces with an image classifier model.
 
 The app will take a user uploaded image of a fungus and predict whether the fungus is edible or poisonous.
